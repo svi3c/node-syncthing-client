@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - "10"
+  - "12"
+  - "14"
+services:
+  - docker
+install:
+  - npm install
+before_script:
+  - npm install
+  - docker-compose up -d
+script:
+  - docker exec -t node npm test

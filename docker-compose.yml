@@ -1,0 +1,28 @@
+version: "3"
+services:
+  node:
+    container_name: node
+    image: node:alpine
+    volumes:
+      - ".:/data"
+      - "st1:/st1"
+      - "st2:/st2"
+    working_dir: /data
+    command: sleep infinity
+  st1:
+    container_name: st1
+    image: syncthing/syncthing
+    expose:
+      - "8384"
+    volumes:
+      - "st1:/var/syncthing"
+  st2:
+    container_name: st2
+    image: syncthing/syncthing
+    expose:
+      - "8384"
+    volumes:
+      - "st2:/var/syncthing"
+volumes:
+  st1:
+  st2:
