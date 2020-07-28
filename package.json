@@ -1,5 +1,5 @@
 {
-  "name": "syncthing-optimizer",
+  "name": "syncthing-client",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
