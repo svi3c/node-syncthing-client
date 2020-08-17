@@ -90,9 +90,98 @@ describe("api", () => {
     describe("getDiscovery()", () => {
       it("should retrieve current discovery", async () => {
         const result = await api1.system.getDiscovery();
-        Object.values(result).forEach(({ addresses }) => {
-          expect(addresses.every((addr) => typeof addr === "string"));
+        Object.values(result).forEach(({ addresses }) =>
+          expect(addresses.every((addr) => typeof addr === "string"))
+        );
+      });
+    });
+    describe("errors", () => {
+      it("should add, read and clear errors", async () => {
+        expect(await api1.system.getErrors()).toEqual({ errors: null });
+        await api1.system.addError("Some error");
+        expect(await api1.system.getErrors()).toEqual({
+          errors: [
+            { message: "Some error", level: 3, when: expect.any(String) },
+          ],
         });
+        await api1.system.clearErrors();
+        expect(await api1.system.getErrors()).toEqual({ errors: null });
+      });
+    });
+    describe("getLogs()", () => {
+      it("should retrieve recent logs", async () => {
+        const result = await api1.system.getLogs();
+        expect(
+          result.messages.every(
+            ({ level, message, when }) =>
+              typeof level === "number" &&
+              typeof message === "string" &&
+              typeof when === "string"
+          )
+        );
+      });
+    });
+    describe("pause()", () => {
+      it("should fail on wrong id", async () => {
+        expect.assertions(2);
+        try {
+          await api1.system.pause("wrong-id");
+        } catch (e) {
+          expect(e.body).toMatch("device ID invalid");
+          expect(e.statusCode).toEqual(500);
+        }
+      });
+      it("should pause itself", async () => {
+        const id = (await api1.system.getConfig()).devices[0].deviceID;
+        await api1.system.pause(id);
+      });
+    });
+    describe("ping()", () => {
+      it("should return a ping response", async () => {
+        expect(await api1.system.ping()).toEqual({ ping: "pong" });
+      });
+    });
+    describe("resume()", () => {
+      it("should fail on wrong id", async () => {
+        expect.assertions(2);
+        try {
+          await api1.system.resume("wrong-id");
+        } catch (e) {
+          expect(e.body).toMatch("device ID invalid");
+          expect(e.statusCode).toEqual(500);
+        }
+      });
+      it("should resume itself", async () => {
+        const id = (await api1.system.getConfig()).devices[0].deviceID;
+        await api1.system.resume(id);
+      });
+    });
+    describe("getStatus()", () => {
+      it("should retrieve the system status", async () => {
+        const id = (await api1.system.getConfig()).devices[0].deviceID;
+        expect(await api1.system.getStatus()).toEqual(
+          expect.objectContaining({
+            myID: id,
+          })
+        );
+      });
+    });
+    xdescribe("getUpgrade()", () => {
+      it("should retrieve the upgrade status", async () => {
+        expect(await api1.system.getUpgrade()).toEqual(
+          expect.objectContaining({
+            running: "v123",
+          })
+        );
+      });
+    });
+    describe("getVersion()", () => {
+      it("should retrieve the current version", async () => {
+        expect(await api1.system.getVersion()).toEqual(
+          expect.objectContaining({
+            os: "linux",
+          })
+        );
       });
     });
   });

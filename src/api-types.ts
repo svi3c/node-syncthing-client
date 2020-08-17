@@ -574,3 +574,51 @@ export type SyncthingEventFromType<
   : T extends "StartupComplete"
   ? StartupComplete
   : StateChanged;
+
+export interface Status {
+  alloc: number;
+  connectionServiceStatus: {
+    [addr: string]: {
+      error: null | string;
+      lanAddresses: string[];
+      wanAddresses: string[];
+    };
+  };
+  cpuPercent: number;
+  discoveryEnabled: boolean;
+  discoveryErrors: { [key: string]: string };
+  discoveryMethods: number;
+  goroutines: number;
+  guiAddressOverridden: boolean;
+  guiAddressUsed: string;
+  lastDialStatus: any;
+  myID: string;
+  pathSeparator: string;
+  startTime: Date;
+  sys: number;
+  tilde: string;
+  uptime: number;
+  urVersionMax: number;
+}
+
+export interface Upgrade {
+  latest: string;
+  majorVersion: boolean;
+  newer: boolean;
+  running: string;
+}
+
+export interface Version {
+  arch: string;
+  codename: string;
+  date: Date;
+  isBeta: boolean;
+  isCandidate: boolean;
+  isRelease: boolean;
+  longVersion: string;
+  os: string;
+  stamp: string;
+  tags: string[];
+  user: string;
+  version: string;
+}

@@ -5,8 +5,12 @@ import {
   SyncthingEvent,
   SyncthingEventFromType,
   TotalConnections,
+  Status,
+  Upgrade,
+  Version,
 } from "./api-types";
 import { get, post } from "./request";
+import { stringify } from "querystring";
 
 class Api {
   constructor(private url: string, private apiToken: string) {}
@@ -65,6 +69,62 @@ class System extends Api {
     return this._get<{ [id: string]: { addresses: string[] } }>(
       "/system/discovery"
     );
+  }
+
+  clearErrors() {
+    return this._post<void>("/system/error/clear");
+  }
+
+  getErrors() {
+    return this._get<{ errors: Array<{ when: string; message: string }> }>(
+      "/system/error"
+    );
+  }
+
+  addError(message: string) {
+    return this._post<void>("/system/error", message);
+  }
+
+  getLogs() {
+    return this._get<{
+      messages: Array<{ level: number; when: string; message: string }>;
+    }>("/system/log");
+  }
+
+  pause(device: string) {
+    return this._post<void>("/system/pause", null, { device });
+  }
+
+  ping() {
+    return this._get<{ ping: "pong" }>("/system/ping");
+  }
+
+  reset(folder?: string) {
+    return this._post<void>("/system/reset", null, { folder });
+  }
+
+  restart() {
+    return this._post<void>("/system/restart");
+  }
+
+  resume(device: string) {
+    return this._post<void>("/system/resume", null, { device });
+  }
+
+  shutdown() {
+    return this._post<void>("/system/shutdown");
+  }
+
+  getStatus() {
+    return this._get<Status>("/system/status");
+  }
+
+  getUpgrade() {
+    return this._get<Upgrade>("/system/upgrade");
+  }
+
+  getVersion() {
+    return this._get<Version>("/system/version");
   }
 }
 

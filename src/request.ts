@@ -36,12 +36,21 @@ export function request<T = string>(
   return new Promise<Response<T>>((resolve, reject) => {
     opts.headers = opts.headers || {};
     if (body) {
-      const json = JSON.stringify(body);
-      body = Readable.from(json);
-      Object.assign(opts.headers, {
-        "Content-Type": "application/json",
-        "Content-Length": Buffer.byteLength(json),
-      });
+      if (typeof body === "string") {
+        const length = Buffer.byteLength(body);
+        body = Readable.from(body);
+        Object.assign(opts.headers, {
+          "Content-Type": "text/plain",
+          "Content-Length": length,
+        });
+      } else {
+        const json = JSON.stringify(body);
+        body = Readable.from(json);
+        Object.assign(opts.headers, {
+          "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(json),
+        });
+      }
     }
     const query = params && combineParams(params);
     const req = (url.startsWith("https") ? https.request : http.request)(
