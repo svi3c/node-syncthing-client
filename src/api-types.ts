@@ -227,6 +227,11 @@ export interface Lan {
   User?: any;
 }
 
+export interface Debug {
+  enabled: string[];
+  facilities: { [key: string]: string };
+}
+
 // ------------------- Events -------------------
 
 interface EventBase {

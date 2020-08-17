@@ -1,6 +1,7 @@
 import {
   Config,
   Connection,
+  Debug,
   SyncthingEvent,
   SyncthingEventFromType,
   TotalConnections,
@@ -47,6 +48,23 @@ class System extends Api {
       connections: { [id: string]: Connection };
       total: TotalConnections;
     }>("/system/connections");
+  }
+
+  getDebug() {
+    return this._get<Debug>("/system/debug");
+  }
+
+  setDebug(enable: string[], disable: string[] = []) {
+    return this._get<Debug>("/system/debug", {
+      disable,
+      enable,
+    });
+  }
+
+  getDiscovery() {
+    return this._get<{ [id: string]: { addresses: string[] } }>(
+      "/system/discovery"
+    );
   }
 }
 

@@ -84,6 +84,7 @@ const combineParams = (params: {}) =>
       ([key, value]) =>
         value !== null &&
         value !== undefined &&
+        (!Array.isArray(value) || value.length > 0) &&
         `${key}=${
           Array.isArray(value)
             ? value.map(encodeURIComponent).join(",")
